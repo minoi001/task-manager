@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
+import { ChakraProvider, Checkbox, Button } from "@chakra-ui/react";
 
 function App() {
   useEffect(() => {
@@ -16,7 +17,7 @@ function App() {
       });
   }, []);
 
-  const [newTask, setNewTask] = useState({});
+  const [newTask, setNewTask] = useState({ title: "", status: false });
   const [tasks, setTasks] = useState([]);
 
   function createNewTask() {
@@ -65,68 +66,80 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Task Manager</h1>
-        <div className="inline">
-          <div className="inline">
-            <h3>Add new task</h3>
-            <input
-              type="text"
-              value={newTask.title}
-              onChange={(event) => {
-                setNewTask({ title: event.target.value, status: false });
-              }}
-            />
-            <button
-              onClick={() => {
-                createNewTask();
-              }}
-            >
-              Add task
-            </button>
+    <ChakraProvider>
+      <div className="App">
+        <header className="App-header">
+          <h1>Task Manager</h1>
+          <div className="inline-block">
+            <div className="inline">
+              <h3>Add new task</h3>
+              <input
+                type="text"
+                value={newTask.title}
+                onChange={(event) => {
+                  setNewTask({ title: event.target.value, status: false });
+                }}
+              />
+              <Button
+                colorScheme="orange"
+                onClick={() => {
+                  createNewTask();
+                }}
+              >
+                Add task
+              </Button>
+            </div>
+            <div className="inline">
+              <h3>Task List</h3>
+              <table className="task-table">
+                <tbody>
+                  {tasks.map((task) => (
+                    <tr key={task._id}>
+                      <td>
+                        <Checkbox
+                          colorScheme="orange"
+                          size="lg"
+                          bg="white"
+                          border="orange"
+                          isChecked={task.status}
+                          onChange={() => {
+                            editTask({
+                              _id: task._id,
+                              title: task.title,
+                              status: !task.status,
+                            });
+                          }}
+                        />
+                      </td>
+                      <td
+                        className={`task-title ${
+                          task.status ? "completed" : ""
+                        }`}
+                      >
+                        <span>{task.title}</span>
+                      </td>
+                      <td>
+                        <Button
+                          size="xs"
+                          colorScheme="orange"
+                          onClick={() => {
+                            deleteTask({
+                              _id: task._id,
+                            });
+                          }}
+                        >
+                          Delete task
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div className="inline">
-            <h3>Task List</h3>
-            {tasks.map((task) => {
-              // console.log(task);
-              return (
-                <div key={task._id}>
-                  <span
-                    style={{
-                      textDecoration: task.status ? "line-through" : "none",
-                    }}
-                  >
-                    {task.title}
-                  </span>
-                  <input
-                    type="checkbox"
-                    defaultChecked={task.status}
-                    onClick={() => {
-                      editTask({
-                        _id: task._id,
-                        title: task.title,
-                        status: !task.status,
-                      });
-                    }}
-                  />
-
-                  <button
-                    onClick={() => {
-                      deleteTask({
-                        _id: task._id,
-                      });
-                    }}
-                  >
-                    Delete task
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </header>
-    </div>
+        </header>
+      </div>
+    </ChakraProvider>
   );
 }
 
