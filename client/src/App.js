@@ -1,7 +1,30 @@
 import logo from "./logo.svg";
 import "./App.css";
 
+import { useState, useEffect } from "react";
+
 function App() {
+  const [newTask, setNewTask] = useState("");
+  const [tasks, setTasks] = useState([]);
+
+  function createNewTask() {
+    fetch("/api/task", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        task: `${newTask}`,
+        status: false,
+      }),
+    })
+      .then((response) => response.json())
+      .then((response) => console.log(response))
+      .catch((err) => {
+        console.log("Request Failed", err); // Catch errors
+      });
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -9,8 +32,20 @@ function App() {
         <div className="inline">
           <div className="inline">
             <h3>Add new task</h3>
-            <input type="text"></input>
-            <button>Add task</button>
+            <input
+              type="text"
+              value={newTask}
+              onChange={(event) => {
+                setNewTask(event.target.value);
+              }}
+            />
+            <button
+              onClick={() => {
+                createNewTask();
+              }}
+            >
+              Add task
+            </button>
           </div>
           <div className="inline">
             <h3>Task List</h3>
