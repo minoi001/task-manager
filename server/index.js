@@ -13,6 +13,22 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-app.get("/", (req, res) => {
-  res.send("Welcome");
+// CREATE
+app.post("/api/task", (req, res) => {
+  res.send("Create task");
+});
+
+// READ
+app.get("/api/tasks", (req, res) => {
+  res.send("Get tasks");
+});
+
+// UPDATE
+app.put("/api/task", (req, res) => {
+  res.send("Update task");
+});
+
+// DELETE
+app.delete("/api/task", (req, res) => {
+  res.send("Delete task");
 });
