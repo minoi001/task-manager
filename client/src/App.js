@@ -26,12 +26,12 @@ function App() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        task: `${newTask}`,
+        title: `${newTask}`,
         status: false,
       }),
     })
       .then((response) => response.json())
-      .then((response) => console.log(response))
+      .then((response) => setTasks(response))
       .catch((err) => {
         console.log("Request Failed", err); // Catch errors
       });

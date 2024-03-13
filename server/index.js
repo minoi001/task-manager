@@ -41,16 +41,44 @@ async function getTasks() {
   }
 }
 
+async function addTask(task) {
+  try {
+    // Connect to MongoDB
+    await client.connect();
+
+    // Access the "tasks" database and collection
+    const database = client.db("tasks");
+    const collection = database.collection("tasks");
+
+    // Insert the task document into the collection
+    const result = await collection.insertOne(task);
+
+    return result.insertedId; // Return the ID of the inserted document
+  } catch (error) {
+    console.error("Error adding task:", error);
+    throw error; // Rethrow the error to be handled by the caller
+  } finally {
+    // Close the MongoDB connection
+    await client.close();
+  }
+}
+
 // CREATE
-app.post("/api/task", (req, res) => {
-  res.json(req.body);
+app.post("/api/task", async (req, res) => {
+  try {
+    let newTask = await addTask(req.body); // Use await to wait for the promise to resolve
+    let taskList = await getTasks();
+    res.json(taskList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while fetching tasks.");
+  }
 });
 
 // READ
 app.get("/api/tasks", async (req, res) => {
   try {
     let taskList = await getTasks(); // Use await to wait for the promise to resolve
-    console.log(taskList);
     res.json(taskList);
   } catch (error) {
     console.error(error);
