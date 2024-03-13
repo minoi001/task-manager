@@ -49,6 +49,21 @@ function App() {
       });
   }
 
+  function deleteTask(task) {
+    fetch("/api/task", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(task),
+    })
+      .then((response) => response.json())
+      .then((response) => setTasks(response))
+      .catch((err) => {
+        console.log("Request Failed", err); // Catch errors
+      });
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -96,7 +111,15 @@ function App() {
                     }}
                   />
 
-                  <button>Delete task</button>
+                  <button
+                    onClick={() => {
+                      deleteTask({
+                        _id: task._id,
+                      });
+                    }}
+                  >
+                    Delete task
+                  </button>
                 </div>
               );
             })}

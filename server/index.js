@@ -89,6 +89,30 @@ async function editTask(updatedTask) {
   }
 }
 
+async function deleteTask(task) {
+  try {
+    // Connect to MongoDB
+    await client.connect();
+
+    // Access the "tasks" database and collection
+    const database = client.db("tasks");
+    const collection = database.collection("tasks");
+    const objectId = new ObjectId(task._id);
+
+    // Delete the task document from the collection
+    const result = await collection.deleteOne({ _id: objectId });
+
+    // Check if the task was found and deleted
+    return result;
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    throw error; // Rethrow the error to be handled by the caller
+  } finally {
+    // Close the MongoDB connection
+    await client.close();
+  }
+}
+
 // CREATE
 app.post("/api/task", async (req, res) => {
   try {
@@ -114,7 +138,6 @@ app.get("/api/tasks", async (req, res) => {
 
 // UPDATE
 app.put("/api/task", async (req, res) => {
-  console.log(req.body);
   try {
     let updatedTask = await editTask(req.body); // Use await to wait for the promise to resolve
     console.log(updatedTask);
@@ -127,6 +150,13 @@ app.put("/api/task", async (req, res) => {
 });
 
 // DELETE
-app.delete("/api/task", (req, res) => {
-  res.send("Delete task");
+app.delete("/api/task", async (req, res) => {
+  try {
+    let deletedTask = await deleteTask(req.body); // Use await to wait for the promise to resolve
+    let taskList = await getTasks();
+    res.json(taskList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while fetching tasks.");
+  }
 });
