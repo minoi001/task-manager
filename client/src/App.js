@@ -16,7 +16,7 @@ function App() {
       });
   }, []);
 
-  const [newTask, setNewTask] = useState("");
+  const [newTask, setNewTask] = useState({});
   const [tasks, setTasks] = useState([]);
 
   function createNewTask() {
@@ -25,10 +25,22 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        title: `${newTask}`,
-        status: false,
-      }),
+      body: JSON.stringify(newTask),
+    })
+      .then((response) => response.json())
+      .then((response) => setTasks(response))
+      .catch((err) => {
+        console.log("Request Failed", err); // Catch errors
+      });
+  }
+
+  function editTask(task) {
+    fetch("/api/task", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(task),
     })
       .then((response) => response.json())
       .then((response) => setTasks(response))
@@ -46,9 +58,9 @@ function App() {
             <h3>Add new task</h3>
             <input
               type="text"
-              value={newTask}
+              value={newTask.title}
               onChange={(event) => {
-                setNewTask(event.target.value);
+                setNewTask({ title: event.target.value, status: false });
               }}
             />
             <button
@@ -65,8 +77,25 @@ function App() {
               // console.log(task);
               return (
                 <div key={task._id}>
-                  <span>{task.title}</span>
-                  <button>Edit task</button>
+                  <span
+                    style={{
+                      textDecoration: task.status ? "line-through" : "none",
+                    }}
+                  >
+                    {task.title}
+                  </span>
+                  <input
+                    type="checkbox"
+                    defaultChecked={task.status}
+                    onClick={() => {
+                      editTask({
+                        _id: task._id,
+                        title: task.title,
+                        status: !task.status,
+                      });
+                    }}
+                  />
+
                   <button>Delete task</button>
                 </div>
               );

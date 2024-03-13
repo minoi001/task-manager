@@ -10,7 +10,7 @@ const app = express();
 const username = encodeURIComponent(process.env.MONGO_DB_USER);
 const password = encodeURIComponent(process.env.MONGO_DB_PASSWORD);
 
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${username}:${password}@taskmanager.orlicon.mongodb.net/`;
 
 const client = new MongoClient(uri);
@@ -63,6 +63,32 @@ async function addTask(task) {
   }
 }
 
+async function editTask(updatedTask) {
+  try {
+    // Connect to MongoDB
+    await client.connect();
+
+    // Access the "tasks" database and collection
+    const database = client.db("tasks");
+    const collection = database.collection("tasks");
+    const objectId = new ObjectId(updatedTask._id);
+
+    // Update the task document in the collection
+    const result = await collection.updateOne(
+      { _id: objectId }, // Filter for the task with the given ID
+      { $set: { title: updatedTask.title, status: updatedTask.status } } // Update the task with the provided object
+    );
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error("Error editing task:", error);
+    throw error; // Rethrow the error to be handled by the caller
+  } finally {
+    // Close the MongoDB connection
+    await client.close();
+  }
+}
+
 // CREATE
 app.post("/api/task", async (req, res) => {
   try {
@@ -87,8 +113,17 @@ app.get("/api/tasks", async (req, res) => {
 });
 
 // UPDATE
-app.put("/api/task", (req, res) => {
-  res.json(req.body);
+app.put("/api/task", async (req, res) => {
+  console.log(req.body);
+  try {
+    let updatedTask = await editTask(req.body); // Use await to wait for the promise to resolve
+    console.log(updatedTask);
+    let taskList = await getTasks();
+    res.json(taskList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while fetching tasks.");
+  }
 });
 
 // DELETE
