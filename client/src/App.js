@@ -1,9 +1,9 @@
-import logo from "./logo.svg";
 import "./App.css";
-
 import { useState, useEffect } from "react";
 
 function App() {
+  useEffect(() => {}, []);
+
   const [newTask, setNewTask] = useState("");
   const [tasks, setTasks] = useState([]);
 
