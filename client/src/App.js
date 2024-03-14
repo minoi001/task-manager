@@ -35,6 +35,7 @@ function App() {
     })
       .then((response) => response.json())
       .then((response) => setTasks(response))
+      .then(setNewTask({ title: "", status: false }))
       .catch((err) => {
         console.log("Request Failed", err); // Catch errors
       });
