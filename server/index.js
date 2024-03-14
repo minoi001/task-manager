@@ -113,6 +113,11 @@ async function deleteTask(task) {
   }
 }
 
+// WELCOME
+app.get("/", async (req, res) => {
+  res.send("Welcome");
+});
+
 // CREATE
 app.post("/api/task", async (req, res) => {
   try {

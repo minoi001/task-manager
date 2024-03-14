@@ -70,6 +70,16 @@ To run the application, follow these steps:
 
 4. Once the containers are up and running, you can access the react application at `http://localhost:3000` and the express application at `http://localhost:3002`.
 
+## Running with Docker Compose
+
+To build and run the application using Docker Compose, execute the following command:
+
+```bash
+npm run docker:build
+```
+
+This command will build Docker images for the server and client, and start the containers defined in the `docker-compose.yml` file.
+
 ## Additional Information
 
 For more information on Docker, visit the [Docker documentation](https://docs.docker.com/).

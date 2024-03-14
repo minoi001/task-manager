@@ -126,3 +126,9 @@ h3 {
 .delete-btn:hover {
   background-color: #c82333; /* Darker red color on hover */
 }
+
+.inline-container {
+  display: flex;
+  justify-content: space-between; /* Adjust as needed */
+  align-items: center; /* Adjust as needed */
+}
