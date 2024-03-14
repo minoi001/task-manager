@@ -54,21 +54,21 @@ To set up MongoDB, follow these steps:
 
 To run the application, follow these steps:
 
-1. Ensure Docker is running on your system.
-
-2. Navigate to the project's root folder.
+1. Navigate to the project's root folder and start the application.
 
    ```bash
-   cd project-name
+   cd task-manager
+   npm start
    ```
 
-3. Run the following command to start the application using Docker:
+2.  Navigate to the project's client folder and start the application.
 
-   ```bash
-   npm run build:client
+```bash
+   cd client
+   npm start
    ```
 
-4. Once the containers are up and running, you can access the react application at `http://localhost:3000` and the express application at `http://localhost:3002`.
+3. You can now access the react application at `http://localhost:3000` and the express application at `http://localhost:3002`.
 
 ## Running with Docker Compose
 
